@@ -1,0 +1,3 @@
+model_inference_configuration:
+  path_to_model_weights: "models/best.pth"
+  path_to_tf_idf_vectorizer: "models/tfidf_vectorizer.pkl"
