@@ -82,3 +82,15 @@ def test_parse_multi_page_pdf_first_page():
     assert result is not None
     assert isinstance(result, str)
     assert len(result) > 0
+
+
+def test_parse_too_many_pages():
+    config = PDFParserConfiguration({"max_pages": 10000})
+    parser = PyPDFParser(parser_config=config)
+    pdf_path = Path("tests/data/72052.pdf")
+
+    result = parser.parse(pdf_path)
+    print(result)
+    assert result is not None
+    assert isinstance(result, str)
+    assert len(result) > 0
