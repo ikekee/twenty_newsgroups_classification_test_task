@@ -24,6 +24,16 @@ def open_yaml(path_to_yaml_file: Path) -> Dict[str, Any]:
         return yaml.load(yaml_file, Loader=loader)
 
 
+class PDFParserConfiguration:
+    def __init__(self, config_data: Dict[str, Any]):
+        """Creates an instance of the class.
+
+        Args:
+            config_data: A dictionary containing configuration parameters.
+        """
+        self.max_pages = config_data["max_pages"]
+
+
 class ModelInferenceConfiguration:
     """Encapsulates model inference configuration parameters."""
 
@@ -47,6 +57,7 @@ class Configuration:
             config_file_path: A path to YAML config file.
         """
         config_data = open_yaml(config_file_path)
+        self.pdf_parser_configuration = PDFParserConfiguration(config_data["pdf_parser"])
         self.model_inference_configuration = ModelInferenceConfiguration(
-            config_data["model_inference_configuration"]
+            config_data["model_inference"]
         )

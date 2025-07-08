@@ -1,3 +1,5 @@
-model_inference_configuration:
+pdf_parser:
+  max_pages: -1
+model_inference:
   path_to_model_weights: "models/best.pth"
   path_to_tf_idf_vectorizer: "models/tfidf_vectorizer.pkl"
