@@ -42,7 +42,6 @@ class PyPDFParser:
         reader = PdfReader(pdf_file_path)
         if self._max_pages == -1 or self._max_pages > len(reader.pages):
             self._max_pages = len(reader.pages)
-        print(self._max_pages)
         result = []
         for i in range(self._max_pages):
             page = reader.pages[i]
