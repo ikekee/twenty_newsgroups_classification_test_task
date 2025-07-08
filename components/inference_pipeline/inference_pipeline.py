@@ -45,7 +45,20 @@ def check_and_choose_torch_device() -> torch.device:
 
 
 class ModelInferencePipeline:
+    """This class encapsulates the inference pipeline steps for the text classification.
+
+    Attributes:
+        _device: Device on which the model is running.
+        _model: PyTorch model used for classification.
+        _tfidf_vectorizer: TF-IDF vectorizer used for preprocessing the input text.
+    """
+
     def __init__(self, model_inference_config: ModelInferenceConfiguration):
+        """Creates an instance of the class.
+
+        Args:
+            model_inference_config: Configuration object for parts of the inference pipeline.
+        """
         path_to_model_weights = model_inference_config.path_to_model_weights
         path_to_tf_idf_vectorizer = model_inference_config.path_to_tf_idf_vectorizer
         if not path_to_model_weights.exists():
