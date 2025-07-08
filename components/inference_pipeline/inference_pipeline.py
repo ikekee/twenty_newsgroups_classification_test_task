@@ -1,9 +1,13 @@
 """This module contains a class which is used to use classification model in a reference mode."""
+from warnings import warn
+
 import joblib
+import numpy as np
 import torch
 
 from common.configuration import ModelInferenceConfiguration
 from components.classification_model.model import FFNN
+from components.common.text_preprocessing_lib import preprocess_single_text
 
 
 target_values_to_names = {
@@ -59,7 +63,35 @@ class ModelInferencePipeline:
         self._model.eval()
         self._tfidf_vectorizer = joblib.load(path_to_tf_idf_vectorizer)
 
-    def predict(self, text: str) -> str:
+    def _prepare_and_vectorize_text(self, text: str) -> torch.Tensor:
+        """Performs preprocessing of the text and vectorizes it using TF-IDF vectorizer.
+
+        Args:
+            text: String text to vectorize.
+
+        Returns:
+            TF-IDF vector of the text as a torch.Tensor.
+        """
+        tf_idf_vector = self._tfidf_vectorizer.transform([text]).toarray().astype(np.float32)
+        tf_idf_vector = torch.from_numpy(tf_idf_vector).to(self._device)
+        if tf_idf_vector.sum().item() == 0:
+            warn("No words in the text were found in the vocabulary. "
+                 "The text will be treated as a vector of zeros. Prediction may be incorrect.")
+        return tf_idf_vector
+
+    def _predict_class_on_vector(self, tf_idf_vector: torch.Tensor) -> str:
+        """Performs prediction on the given vector.
+
+        Args:
+            tf_idf_vector: TF-IDF vector for performing prediction.
+
+        Returns:
+            String class name.
+        """
+        model_prediction = self._model(tf_idf_vector).argmax().item()
+        return target_values_to_names[model_prediction]
+
+    def run(self, text: str) -> str:
         """Performs prediction on the given text.
 
         Args:
@@ -68,7 +100,6 @@ class ModelInferencePipeline:
         Returns:
             Class name for the predicted value as a string.
         """
-        tf_idf_vector = self._tfidf_vectorizer.transform([text]).toarray()
-        tf_idf_vector = torch.from_numpy(tf_idf_vector).to(self._device)
-        model_prediction = self._model(tf_idf_vector).argmax().item()
-        return target_values_to_names[model_prediction]
+        preprocessed_text = self._prepare_and_vectorize_text(text)
+        class_name = self._predict_class_on_vector(preprocessed_text)
+        return class_name
