@@ -87,9 +87,6 @@ class ModelInferencePipeline:
         """
         tf_idf_vector = self._tfidf_vectorizer.transform([text]).toarray().astype(np.float32)
         tf_idf_vector = torch.from_numpy(tf_idf_vector).to(self._device)
-        if tf_idf_vector.sum().item() == 0:
-            warn("No words in the text were found in the vocabulary. "
-                 "The text will be treated as a vector of zeros. Prediction may be incorrect.")
         return tf_idf_vector
 
     def _predict_class_on_vector(self, tf_idf_vector: torch.Tensor) -> str:
@@ -101,8 +98,13 @@ class ModelInferencePipeline:
         Returns:
             String class name.
         """
-        model_prediction = self._model(tf_idf_vector).argmax().item()
-        return target_values_to_names[model_prediction]
+        if tf_idf_vector.sum().item() == 0:
+            warn("No words in the text were found in the vocabulary. "
+                 "The text will be treated as a vector of zeros. Prediction may be incorrect.")
+            result = "unknown"
+        else:
+            result = target_values_to_names[self._model(tf_idf_vector).argmax().item()]
+        return result
 
     def run(self, text: str) -> str:
         """Performs prediction on the given text.
