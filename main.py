@@ -4,12 +4,12 @@ from pathlib import Path
 
 from common.configuration import Configuration
 from components.inference_pipeline.inference_pipeline import ModelInferencePipeline
-from components.pdf_parser.pypdf2_parser import PyPDF2Parser
+from components.pdf_parser.pypdf_parser import PyPDFParser
 
 
 def main(config_path: Path, pdf_file_path: Path):
     config = Configuration(config_path)
-    pdf_parser = PyPDF2Parser(config.pdf_parser_configuration)
+    pdf_parser = PyPDFParser(config.pdf_parser_configuration)
     inference_pipeline = ModelInferencePipeline(config.model_inference_configuration)
 
     text = pdf_parser.parse(pdf_file_path)

@@ -1,14 +1,14 @@
-"""This module contains a class for parsing PDF files using PyPDF2."""
+"""This module contains a class for parsing PDF files using pypdf."""
 from pathlib import Path
 from typing import Optional
 
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 
 from common.configuration import PDFParserConfiguration
 
 
-class PyPDF2Parser:
-    """This class contains a functionality for parsing PDF files using PyPDF2.
+class PyPDFParser:
+    """This class contains a functionality for parsing PDF files using pypdf.
 
     Attributes:
         _max_pages: Maximum number of pages to read from the PDF file.
@@ -34,6 +34,11 @@ class PyPDF2Parser:
         Returns:
             The parsed text from the PDF file if it can be read, None otherwise.
         """
+        if not pdf_file_path.exists() or pdf_file_path.suffix != ".pdf":
+            raise ValueError(
+                "Invalid file path or file is not a PDF. "
+                "Please provide a valid PDF file path."
+            )
         reader = PdfReader(pdf_file_path)
         num_pages = self._max_pages if self._max_pages != -1 else len(reader.pages)
         result = []
