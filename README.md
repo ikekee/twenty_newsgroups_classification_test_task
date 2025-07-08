@@ -9,9 +9,15 @@ For more information about model metrics you can find in the last chapter.
 
 ## Preparing environment
 1. Use (or install) Python>=3.11.4
-2. Install all required libraries using the file `requirements.txt` in the root folder of the project.
-2. Run tests by using `pytest` in the terminal to make sure that everything works correctly. 
-3. Configure pipeline parameters using `config.yaml` file in the root folder of the project:
+2. Install all required libraries using the file `requirements.txt` in the root folder of the project:
+```bash
+pip install -r requirements.txt 
+```
+3. Run tests by using `pytest` in the terminal to make sure that everything works correctly:
+```bash
+pytest
+```
+4. Configure pipeline parameters using `config.yaml` file in the root folder of the project:
    - Set `max_pages` parameter either to -1 to process all pages of the input file or any positive number to process that amount of pages if you want to increase the speed of the processing and lower memory consumption.
    - Set paths to models files if you want to use non-default models. By default, pretrained models are stored in the `models/` folder.
 
