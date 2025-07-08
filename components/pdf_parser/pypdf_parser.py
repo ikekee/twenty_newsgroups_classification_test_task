@@ -40,9 +40,11 @@ class PyPDFParser:
                 "Please provide a valid PDF file path."
             )
         reader = PdfReader(pdf_file_path)
-        num_pages = self._max_pages if self._max_pages != -1 else len(reader.pages)
+        if self._max_pages == -1 or self._max_pages > len(reader.pages):
+            self._max_pages = len(reader.pages)
+        print(self._max_pages)
         result = []
-        for i in range(num_pages):
+        for i in range(self._max_pages):
             page = reader.pages[i]
             text = page.extract_text()
             result.append(text)
